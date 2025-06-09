@@ -10,9 +10,7 @@
   "plugins": [
     "theme-default",
     "highlight",
-    "search",
-    "fontsettings",
-    "back-to-top-button"
+    "fontsettings"
   ],
   "pluginsConfig": {
     "theme-default": {
