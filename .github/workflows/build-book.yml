@@ -1,0 +1,61 @@
+name: Build Honkit Book
+
+on:
+  push:
+    tags:
+      - 'v*' # Runs only when pushing a version tag like v1.0.0
+  workflow_dispatch: # Allows manual trigger
+  schedule:
+    - cron: '0 4 * * MON' # Weekly build every Monday at 4AM UTC
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Honkit (GitBook CLI Fork)
+        run: npm install honkit
+
+      - name: Install Calibre for PDF generation
+        run: sudo apt-get install calibre -y
+
+      - name: Build Book HTML
+        run: npx honkit build
+
+      - name: Generate PDF
+        run: npx honkit pdf ./ ./DietBook.pdf
+
+      - name: Generate EPUB
+        run: npx honkit epub ./ ./DietBook.epub
+
+      - name: Upload PDF Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: DietBook PDF
+          path: ./DietBook.pdf
+
+      - name: Upload EPUB Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: DietBook EPUB
+          path: ./DietBook.epub
+
+      - name: Release Book Formats
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          name: Release ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          files: |
+            DietBook.pdf
+            DietBook.epub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
