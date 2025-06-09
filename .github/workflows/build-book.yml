@@ -55,6 +55,7 @@ jobs:
             libxcb-sync1 \
             libxcb-xfixes0 \
             libxcb-xkb1 \
+            libxcb-cursor0 \
             libxkbcommon-x11-0 \
             libxkbcommon0 \
             libxrender1 \
