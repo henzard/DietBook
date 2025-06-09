@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 # Using LTS version for better stability
 
     steps:
       - name: Checkout Repository
@@ -24,8 +24,27 @@ jobs:
       - name: Install Honkit (GitBook CLI Fork)
         run: npm install honkit
 
-      - name: Install Calibre for PDF generation
-        run: sudo apt-get install calibre -y
+      - name: Update package lists
+        run: sudo apt-get update
+
+      - name: Install Calibre dependencies
+        run: |
+          sudo apt-get install -y --no-install-recommends \
+            libqt6core6 \
+            libqt6gui6 \
+            libqt6network6 \
+            libqt6webengine6 \
+            libqt6webenginecore6 \
+            libqt6webenginewidgets6 \
+            libqt6widgets6 \
+            libqt6xml6 \
+            python3-pyqt6 \
+            python3-pyqt6.qtwebengine
+
+      - name: Install Calibre
+        run: |
+          wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
+          sudo ln -s /usr/bin/ebook-convert /usr/local/bin/
 
       - name: Build Book HTML
         run: npx honkit build
