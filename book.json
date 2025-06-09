@@ -11,30 +11,13 @@
     "theme-default",
     "highlight",
     "search",
-    "sharing",
     "fontsettings",
-    "livereload",
     "back-to-top-button"
   ],
   "pluginsConfig": {
     "theme-default": {
       "showSummary": true,
       "showLevel": true
-    },
-    "sharing": {
-      "facebook": true,
-      "twitter": true,
-      "google": false,
-      "weibo": false,
-      "instapaper": false,
-      "vk": false,
-      "all": [
-        "facebook",
-        "twitter",
-        "google",
-        "weibo",
-        "instapaper"
-      ]
     },
     "fontsettings": {
       "theme": "white",
