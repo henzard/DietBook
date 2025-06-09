@@ -2,8 +2,10 @@ name: Build Honkit Book
 
 on:
   push:
+    branches:
+      - master
     tags:
-      - 'v*' # Runs only when pushing a version tag like v1.0.0
+      - 'v*' # Still keep tag-based releases
   workflow_dispatch: # Allows manual trigger
   schedule:
     - cron: '0 4 * * MON' # Weekly build every Monday at 4AM UTC
@@ -15,36 +17,41 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for conventional commits
+
+      - name: Setup Git
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'github-actions@github.com'
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      - name: Install Honkit (GitBook CLI Fork)
-        run: npm install honkit
-
-      - name: Update package lists
-        run: sudo apt-get update
-
-      - name: Install Calibre dependencies
+      - name: Install Dependencies
         run: |
-          sudo apt-get install -y --no-install-recommends \
-            libqt6core6 \
-            libqt6gui6 \
-            libqt6network6 \
-            libqt6webengine6 \
-            libqt6webenginecore6 \
-            libqt6webenginewidgets6 \
-            libqt6widgets6 \
-            libqt6xml6 \
-            python3-pyqt6 \
-            python3-pyqt6.qtwebengine
+          npm install honkit
+          npm install --save-dev standard-version
 
       - name: Install Calibre
         run: |
+          sudo apt-get update
+          sudo apt-get install -y wget xz-utils
           wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
           sudo ln -s /usr/bin/ebook-convert /usr/local/bin/
+
+      - name: Bump Version
+        if: github.ref == 'refs/heads/master'
+        run: |
+          # Only bump if there are conventional commits since last tag
+          if git log $(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD --format=%s | grep -q "^(feat|fix|BREAKING CHANGE):"; then
+            npx standard-version --no-verify
+            git push --follow-tags origin master
+          else
+            echo "No conventional commits found, skipping version bump"
+          fi
 
       - name: Build Book HTML
         run: npx honkit build
@@ -68,8 +75,8 @@ jobs:
           path: ./DietBook.epub
 
       - name: Release Book Formats
-        uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
         with:
           name: Release ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}

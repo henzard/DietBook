@@ -1,0 +1,12 @@
+{
+  "name": "dietbook",
+  "version": "0.1.0",
+  "description": "*A faith-driven, tech-friendly, and family-proof path to gut healing and strength.*",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
