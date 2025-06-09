@@ -1,5 +1,7 @@
 # Summary
 
+* [Cover](COVER.md)
+
 * [Introduction](README.md)
 
 ## Part I: Foundations
