@@ -13,6 +13,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04 # Using LTS version for better stability
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Repository
@@ -119,6 +121,20 @@ jobs:
         with:
           name: DietBook EPUB
           path: ./DietBook.epub
+
+      - name: Publish Latest prerelease (master)
+        if: github.ref == 'refs/heads/master'
+        uses: ncipollo/release-action@v1
+        with:
+          tag: latest
+          name: Latest build
+          draft: false
+          prerelease: true
+          allowUpdates: true
+          replacesArtifacts: true
+          generateReleaseNotes: false
+          artifacts: "DietBook.pdf,DietBook.epub"
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release Book Formats
         if: startsWith(github.ref, 'refs/tags/')
