@@ -4,9 +4,18 @@
   "description": "*A faith-driven, tech-friendly, and family-proof path to gut healing and strength.*",
   "main": "index.js",
   "scripts": {
+    "build": "honkit build",
+    "serve": "honkit serve",
+    "compress:cover": "node scripts/compress-cover.js",
+    "pdf": "honkit pdf ./ ./book.pdf",
+    "epub": "honkit epub ./ ./book.epub",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "honkit": "^6.0.3",
+    "sharp": "^0.34.3"
+  }
 }

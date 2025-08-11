@@ -1,4 +1,4 @@
-# DietBook
+# A Holistic Health Journey
 
 ## Honoring God with Your Body and Your Plate
 
