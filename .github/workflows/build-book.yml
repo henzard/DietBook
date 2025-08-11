@@ -28,12 +28,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Install Dependencies
         run: |
-          npm install honkit
-          npm install --save-dev standard-version
+          npm ci
 
       - name: Install Calibre
         run: |
@@ -101,13 +100,13 @@ jobs:
           fi
 
       - name: Build Book HTML
-        run: npx honkit build
+        run: npx --yes honkit build | cat
 
       - name: Generate PDF
-        run: npx honkit pdf ./ ./DietBook.pdf
+        run: npx --yes honkit pdf ./ ./DietBook.pdf | cat
 
       - name: Generate EPUB
-        run: npx honkit epub ./ ./DietBook.epub
+        run: npx --yes honkit epub ./ ./DietBook.epub | cat
 
       - name: Upload PDF Artifact
         uses: actions/upload-artifact@v4
